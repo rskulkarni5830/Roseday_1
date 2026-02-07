@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Rose Day 🌹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Start Screen */
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #startScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Full Screen Photo */
+        .photo-container {
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .tap-text {
+            position: absolute;
+            bottom: 50px;
+            font-size: 24px;
+            color: white;
+            animation: bounce 1s infinite;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Main Content */
+        #mainContent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            transition: opacity 0.8s ease-out;
+            overflow: hidden;
+        }
+
+        #mainContent.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Rose Emoji Animation */
+        .rose {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall linear;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .message {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInScale 1s ease-out;
+            max-width: 90%;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .heart-container {
+            margin-top: 40px;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        .clickable-heart {
+            font-size: 80px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        .clickable-heart:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8));
+        }
+
+        @keyframes heartBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: slideUp 0.8s ease-out 0.6s both;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-no:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .response-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            animation: responseAppear 0.8s ease-out forwards;
+        }
+
+        @keyframes responseAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .music-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 200;
+            border: none;
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .tap-text {
+                font-size: 20px;
+                bottom: 30px;
+            }
+
+            .message {
+                font-size: 24px;
+                margin-bottom: 30px;
+                line-height: 1.4;
+            }
+
+            .clickable-heart {
+                font-size: 60px;
+            }
+
+            .button-container {
+                gap: 20px;
+            }
+
+            .btn {
+                padding: 14px 30px;
+                font-size: 18px;
+            }
+
+            .response-message {
+                font-size: 36px;
+            }
+
+            .music-control {
+                font-size: 24px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen">
+        <div class="photo-container" onclick="startSurprise()">
+            <img src="photo.jpg" alt="Our special moment">
+            <div class="tap-text">Tap the photo ❤️</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent">
+        <button class="music-control" onclick="toggleMusic()" title="Toggle Music">🔊</button>
+
+        <div class="message">Happy Rose Day 🌹<br>You make my life brighter 💕</div>
+        
+        <div class="heart-container">
+            <a href="https://www.google.com" target="_blank" class="clickable-heart" title="Click the heart!">❤️</a>
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-yes" onclick="handleYes()">Yes ❤️</button>
+            <button class="btn btn-no" onclick="handleNo()">No 😢</button>
+        </div>
+    </div>
+
+    <!-- Audio Player (Hidden) -->
+    <audio id="audioPlayer" loop>
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        let roserInterval;
+        let isMusicPlaying = false;
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        function startSurprise() {
+            // Hide start screen
+            document.getElementById('startScreen').classList.add('hidden');
+            
+            // Show main content
+            document.getElementById('mainContent').classList.add('visible');
+            
+            // Play music
+            playMusic();
+            
+            // Start falling roses
+            startFallingRoses();
+        }
+
+        function playMusic() {
+            // Play audio with user interaction
+            const playPromise = audioPlayer.play();
+            
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        isMusicPlaying = true;
+                        updateMusicIcon();
+                        console.log("Music playing!");
+                    })
+                    .catch(error => {
+                        console.log("Autoplay error, user interaction may be required");
+                        isMusicPlaying = false;
+                        updateMusicIcon();
+                    });
+            }
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                audioPlayer.pause();
+                isMusicPlaying = false;
+            } else {
+                audioPlayer.play();
+                isMusicPlaying = true;
+            }
+            updateMusicIcon();
+        }
+
+        function updateMusicIcon() {
+            const musicControl = document.querySelector('.music-control');
+            if (isMusicPlaying) {
+                musicControl.textContent = '🔊';
+            } else {
+                musicControl.textContent = '🔇';
+            }
+        }
+
+        function startFallingRoses() {
+            roserInterval = setInterval(() => {
+                const rose = document.createElement('div');
+                rose.className = 'rose';
+                rose.textContent = '🌹';
+                
+                const randomLeft = Math.random() * 100;
+                const randomDuration = 3 + Math.random() * 2;
+                const randomDelay = Math.random() * 0.5;
+                
+                rose.style.left = randomLeft + '%';
+                rose.style.animation = `fall ${randomDuration}s linear ${randomDelay}s forwards`;
+                
+                document.body.appendChild(rose);
+                
+                setTimeout(() => {
+                    rose.remove();
+                }, (randomDuration + randomDelay) * 1000);
+            }, 300);
+        }
+
+        function handleYes() {
+            showResponse("I love u Anannya.. Ur already a part of life..ur my my rose petals..i will protect u with my thrones forever ❤️");
+        }
+
+        function handleNo() {
+            showResponse("Okay then...get on ur knees ...let sugar daddy check 'what is wrong with ur cat' 🌹");
+        }
+
+        function showResponse(message) {
+            // Hide buttons and heart
+            document.querySelector('.button-container').style.display = 'none';
+            document.querySelector('.heart-container').style.display = 'none';
+            document.querySelector('.message').style.display = 'none';
+            document.querySelector('.music-control').style.display = 'none';
+            
+            // Show response
+            const response = document.createElement('div');
+            response.className = 'response-message';
+            response.textContent = message;
+            document.getElementById('mainContent').appendChild(response);
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (roserInterval) {
+                clearInterval(roserInterval);
+            }
+            audioPlayer.pause();
+        });
+    </script>
+</body>
+</html>
